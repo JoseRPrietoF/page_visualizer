@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!-- twitter bootstrap CSS stylesheet - included to make things pretty, not needed or used by cornerstone -->
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.css" integrity="sha512-c7kgo7PyRiLnl7mPdTDaH0dUhJMpij4aXRMOHmXaFCu96jInpKc8sZ2U6lby3+mOpLSSlAndRtH6dIonO9qVEQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.min.css" integrity="sha512-3NbO5DhK9LuM6wu+IZvV5AYXxqSmj/lfLLmHMV9t18ij+MfmhhxeYEunHllEu+TFJ4tJM5D0DhazM2EGGGvNmQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- <script type="text/javascript" src="./js/viewer.js"></script> -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.js" integrity="sha512-lgj1oT2/0EWpv2oHNeqzWmINqNEfHR4kjvl5DXc6o8IPxoRLgMxhW6c/mZ/fnSFN+6ByTSabiq//GGbYMo/4Lw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!--     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.min.js" integrity="sha512-i5q29evO2Z4FHGCO+d5VLrwgre/l+vaud5qsVqQbPXvHmD9obORDrPIGFpP2+ep+HY+z41kAmVFRHqQAjSROmA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.common.js" integrity="sha512-/b4aNCPKM0T9D/6Q07LlvhuX57tzV9F4js5Y5Y6K2xB6O672ayI7nFXEVH8tAK7uopWl+kFcd2Mwsh+ysibp1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.common.min.js" integrity="sha512-8+fJWtAOavjHFib9FoUHER0R7IxVikVKOp2uctuJgbLXPvaWdEDli8+eECuT0WlI8X7LJNr7NPanNfxI9U1uhA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.esm.js" integrity="sha512-a4PfBtZ5D6To5Iln/kG+n5SgRp6U2LAaxcB6qKSMBaIdWUy7XnNq1fbbot3GUznHyD+BjyYjoeTysCl5EHpA6A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.esm.min.js" integrity="sha512-wmbBqx2ckdJRbUoSWA075kL6uxHP3VkwQk29kZ20X+2HxX+9MzZuZMkTvWxzqLKUhfySGOGe5Ndco6JECkAmiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+</head>
+<body>
+<!-- a block container is required -->
+
+<div>
+    
+
+    <ul id="images">
+        <!-- <button type="button" class="btn btn-primary" value="Nesle_Chantilly_GB_Reg12_14F22_31.jpg" style="height:200px;width:200px">
+            31
+        </button>
+    
+        <button type="button" class="btn btn-primary" value="Nesle_Chantilly_GB_Reg12_14F22_33.jpg" style="height:200px;width:200px">
+            33
+        </button> -->
+    </ul>
+</div>
+</body>
+</html>
+
+<!-- Load all images -->
+<script type="module">
+    // var folder = "images/Notre_Dame_Roche_Paris_BnF_10996/Images/";
+    // var folder = "images_prueba/"
+    var folder = "images/"
+    var folder_images_all = "images_all/"
+    var folder_thumb = "images_thumbnails/";
+    var folder_pages = "pages/"
+    var colors = {
+        "AI": "red",
+        "AM": "green",
+        "AF": "blue",
+        "AC": "purple",
+    }
+
+    var viewer = new Viewer(document.getElementById('images'), {
+                    hidden: function () {
+                        viewer.destroy();
+                    },
+        });
+
+    var dirs_selected = new Set()
+    // dirs_selected.add("Notre_Dame_Roche_Paris_BnF_10996/");
+    // dirs_selected.add("Port_Royal_2_Paris_BnF_10998/");
+    // dirs_selected.add("Molesme_2_Dijon_ADCO_Cart_143_7H7/");
+    dirs_selected.add("Nesle_Chantilly_GB_Reg12_14F22/");
+
+    function ajax_f(){
+    $.ajax({
+        url : folder,
+        async : false,
+        type: 'GET',
+        success: function (data) {
+            $(data).find("a").attr("href", function (i, val) {
+                if( dirs_selected.has(val) ) { 
+                    // console.log(val)
+                    // console.log(folder + val)
+                    var path = folder + val + "Images/"
+                    // $.get(folder + val + "Images/", {}, function (val2){
+                    // $(path).find("a").attr("href", function (i, val) {
+                    $.ajax({
+                        url : path,
+                        async : false,
+                        type: 'GET',
+                        success: function (data2) {
+                            $(data2).find("a").attr("href", function (i, val2) {
+                                
+                                if( val2.match(/\.(jpe?g|png|gif)$/) ) { 
+                                    // console.log(val2)
+                                    var value_path = val.slice(0, -1) + "_" + val2
+                                    $("#images").append( "<button class='btn btn-primary' value='"+ value_path +"' style='height:200px;width:200px'> </button>" );
+                                } 
+                            }); // find dataw
+                        }// sucess ajax
+                    }); 
+                } // if
+                
+            }); // Data find
+            
+        }, // success
+    }); // ajax
+}
+    Promise.all([ajax_f()]).then(() => {
+        // all requests finished successfully
+        var options = {
+                "title": true,
+            }
+        // const gallery = new Viewer(document.getElementById('images'));
+    }).catch(() => {
+        // all requests finished but one or more failed
+    })
+
+    // console.log($(".btn")[1])
+    $(".btn").each(function(){
+        var button = $(this)[0]
+        var val = button.value;
+        button.style.backgroundImage  = "url('" + folder_thumb + val
+        button.style.backgroundRepeat = "no-repeat";
+        button.style.backgroundPosition = "center";
+        button.style.backgroundSize = "cover";
+
+
+        button.addEventListener('click', function () {
+            var img = new Image();
+            // var val = button.value;
+            console.log(folder_images_all + button.value)
+            
+            
+            // img.src = folder_images_all + button.value;
+
+
+            img.src = folder_thumb + button.value; // TODO remove
+
+            // img.src = folder + val;
+
+
+
+            var c = document.createElement('canvas');
+            c.width = 500;
+            c.height = 500;
+            var ctx = c.getContext("2d");
+            var fname = val.replace(/\.[^/.]+$/, "")
+            var xml_path = folder_pages + fname + ".xml"
+            console.log("Loading img")
+            img.onload = function()
+            // img.onload = function()
+            {   
+                console.log("Inside")
+                ctx.drawImage(img, 0, 0, img.width,img.height,0,0,c.width,c.height);
+                
+                var text_size = 30;
+                ctx.lineWidth = 3;
+                
+                var markers = null;
+                var coords_all = [];
+                $.get(xml_path, {}, function (xml){
+                    var imageWidth_page = $('Page',xml)[0].getAttribute("imageWidth");
+                    var imageHeight_page = $('Page',xml)[0].getAttribute("imageHeight");
+                    // var coords = $(this)[0].getAttribute("points")
+                    $('TextRegion',xml).each(function(i){
+                        var xs = []
+                        var ys = []
+                        markers = $(this);
+                        var type_act = markers[0].getAttribute("custom").split("type:")[1].split(";")[0]
+                        ctx.fillStyle = colors[type_act];
+                        
+                        $('Coords',markers).each(function(i){
+                            var coords = $(this)[0].getAttribute("points")
+                            coords = coords.split(" ")
+                            
+                            for (var ii = 0; ii < coords.length; ii++) {
+                                var xy = coords[ii].split(",")
+                                xs.push(parseInt(xy[0]))
+                                ys.push(parseInt(xy[1]))
+                                
+                            }
+                            var min_x = Math.min(...xs)
+                            var max_x = Math.max(...xs)
+                            var min_y = Math.min(...ys)
+                            var max_y = Math.max(...ys)
+                            var twidth = Math.abs(min_x - max_x)
+                            var theight =  Math.abs(min_y - max_y)
+                            min_x = parseInt((min_x/imageWidth_page) * c.height)
+                            max_x = parseInt((max_x/imageWidth_page) * c.height)
+                            min_y = parseInt((min_y/imageHeight_page) * c.width)
+                            max_y = parseInt((max_y/imageHeight_page) * c.width)
+                            twidth = parseInt((twidth/imageWidth_page) * c.width)
+                            theight = parseInt((theight/imageHeight_page) * c.height)
+                            coords_all.push([min_x, min_y, twidth, theight, type_act])
+                            ctx.font = text_size+"px Arial";
+                            ctx.fillText(type_act, min_x+text_size/2, min_y+text_size);
+                        })
+                    });
+
+                    for (var j = 0; j < coords_all.length; j++) { 
+                        ctx.beginPath();
+                        ctx.strokeStyle = colors[coords_all[j][4]];
+                        
+                        ctx.rect(coords_all[j][0],coords_all[j][1],coords_all[j][2],coords_all[j][3]);
+                        ctx.globalAlpha = 0.2;
+                        ctx.fillStyle = colors[coords_all[j][4]];
+                        ctx.fillRect(coords_all[j][0],coords_all[j][1],coords_all[j][2],coords_all[j][3]);
+                        ctx.globalAlpha = 1.0;
+                        ctx.stroke();
+                        
+                    }
+                    
+                    const img2 = c.toDataURL('image/png')
+                    // document.getElementById("img_"+i).src = img2
+                    img.src = img2;
+                    img.onload = function(){}
+
+                    // var viewer = new Viewer(img, {
+                    // hidden: function () {
+                    //     viewer.destroy();
+                    // },
+                    // });
+                    // viewer.view(1)
+                    viewer.show();
+
+                });
+                
+
+                
+                // exit
+            }
+
+        })
+
+        
+    })
+    
+</script>
+
