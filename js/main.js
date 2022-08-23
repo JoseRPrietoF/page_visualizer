@@ -5,6 +5,7 @@
     var folder_images_all = "images_all_resized/"
     var folder_thumb = "images_thumbnails/";
     var folder_pages = "pages/" 
+    // var folder_pages_hyp = "pages_hyp/" 
     var colors = {
         "AI": "red",
         "AM": "green",
@@ -82,12 +83,10 @@
             $("#loading")[0].style.display = 'block';
             var img = new Image();
             // var val = button.value;
-            console.log(folder_images_all + val)
             
             img.src = folder_images_all + val;
             // img.src = folder_thumb + val; // TODO remove
 
-            console.log(img.src)
 
             // img.src = folder + val;
 
@@ -98,9 +97,11 @@
             c.height = 500;
             var ctx = c.getContext("2d");
             var fname = val.replace(/\.[^/.]+$/, "")
+            folder_pages = $( "#pages option:selected" ).val();
+            var from = $( "#pages option:selected" ).text();
+            console.log("From: " + folder_pages + " -> " + from)
             var xml_path = folder_pages + fname + ".xml"
-            console.log("Loading img")
-            // console.log(xml_path)
+
             img.onload = function()
             // img.onload = function()
             {   
@@ -122,10 +123,9 @@
                         markers = $(this);
                         var type_act = markers[0].getAttribute("custom").split("type:")[1].split(";")[0]
                         ctx.fillStyle = colors[type_act];
-                        
                         $('Coords',markers).each(function(i){
                             var coords = $(this)[0].getAttribute("points")
-                            coords = coords.split(" ")
+                            coords = coords.trim().split(" ")
                             
                             for (var ii = 0; ii < coords.length; ii++) {
                                 var xy = coords[ii].split(",")
@@ -165,10 +165,24 @@
                     }
                     
                     const img2 = c.toDataURL('image/png')
-                    // document.getElementById("img_"+i).src = img2
                     img.src = img2;
                    
                     img.onload = function(){}
+
+                    // GT and HYP
+
+                    // var c2 = document.createElement('canvas');
+                    // c2.width = c.width*2 + 200;
+                    // c2.height = c.height*2  + 200;
+                    // console.log(c2, c2.width, c2.height)
+                    // var ctx2 = c2.getContext("2d");
+                    // // ctx2.drawImage(img, 0, 0, img.width,img.height,0,0,c.width,c.height);
+                    // ctx2.drawImage(img, 0, 0, img.width,img.height,0,0,c.width,c.height);
+                    // ctx2.drawImage(img, img.width,img.height, img.width,img.height,0,0,c.width,c.height);
+
+                    // const img3 = c2.toDataURL('image/png')
+                    // img.src = img3;
+
 
                     button.setAttribute("src2", img2);
 

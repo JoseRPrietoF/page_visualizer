@@ -44,3 +44,9 @@
     float: left;
     margin: 10px 10px 10px 10px;
 }
+
+.text_select{
+    font-size-adjust: 20px;
+    font-weight: 300;
+    font-size: larger;
+}
