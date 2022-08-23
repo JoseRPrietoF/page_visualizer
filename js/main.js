@@ -93,8 +93,10 @@
 
 
             var c = document.createElement('canvas');
-            c.width = 500;
-            c.height = 500;
+            // c.width = window.innerWidth;;
+            // c.height = window.innerHeight;
+            c.width = 1000;
+            c.height = 1000;
             var ctx = c.getContext("2d");
             var fname = val.replace(/\.[^/.]+$/, "")
             folder_pages = $( "#pages option:selected" ).val();
@@ -108,8 +110,9 @@
                 console.log("Inside")
                 ctx.drawImage(img, 0, 0, img.width,img.height,0,0,c.width,c.height);
                 
-                var text_size = 30;
-                ctx.lineWidth = 3;
+                var text_size = 25;
+                var lineWidth_stroke = 3;
+                ctx.lineWidth = 150;
                 
                 var markers = null;
                 var coords_all = [];
@@ -122,6 +125,14 @@
                         var ys = []
                         markers = $(this);
                         var type_act = markers[0].getAttribute("custom").split("type:")[1].split(";")[0]
+                        var text_ = type_act;
+                        if(folder_pages.includes("hyp")){
+                            var prob_bbox = markers[0].getAttribute("custom").split("probBbox:")[1].split(";")[0]
+                            var probType = markers[0].getAttribute("custom").split("probType:")[1].split(";")[0]
+                            prob_bbox = (Math.round(prob_bbox * 100) / 100).toFixed(2);
+                            probType = (Math.round(probType * 100) / 100).toFixed(2);
+                        }
+
                         ctx.fillStyle = colors[type_act];
                         $('Coords',markers).each(function(i){
                             var coords = $(this)[0].getAttribute("points")
@@ -146,11 +157,19 @@
                             twidth = parseInt((twidth/imageWidth_page) * c.width)
                             theight = parseInt((theight/imageHeight_page) * c.height)
                             coords_all.push([min_x, min_y, twidth, theight, type_act])
+                            
                             ctx.font = text_size+"px Arial";
-                            ctx.fillText(type_act, min_x+text_size/2, min_y+text_size);
+                            ctx.strokeStyle = "black";
+                            ctx.fillStyle = "black";
+                            ctx.fillText(text_, min_x+text_size/2, min_y+text_size);
+                            if(folder_pages.includes("hyp")){
+                                ctx.fillText(" Prob Bbox: " + prob_bbox, min_x+text_size/2, min_y+text_size + text_size);
+                                ctx.fillText(" Prob Act: " + probType, min_x+text_size/2, min_y+text_size + text_size*2);
+                            }
+                            ctx.stroke();
                         })
                     });
-
+                    ctx.lineWidth = lineWidth_stroke;
                     for (var j = 0; j < coords_all.length; j++) { 
                         ctx.beginPath();
                         ctx.strokeStyle = colors[coords_all[j][4]];
@@ -169,38 +188,17 @@
                    
                     img.onload = function(){}
 
-                    // GT and HYP
-
-                    // var c2 = document.createElement('canvas');
-                    // c2.width = c.width*2 + 200;
-                    // c2.height = c.height*2  + 200;
-                    // console.log(c2, c2.width, c2.height)
-                    // var ctx2 = c2.getContext("2d");
-                    // // ctx2.drawImage(img, 0, 0, img.width,img.height,0,0,c.width,c.height);
-                    // ctx2.drawImage(img, 0, 0, img.width,img.height,0,0,c.width,c.height);
-                    // ctx2.drawImage(img, img.width,img.height, img.width,img.height,0,0,c.width,c.height);
-
-                    // const img3 = c2.toDataURL('image/png')
-                    // img.src = img3;
-
-
                     button.setAttribute("src2", img2);
-
+                    console.log(fname)
                     viewer = new Viewer(img, {
                         url:"src" ,
+                        title: fname,
                         hidden: function () {
                             console.log("Destroy")
                             viewer.destroy();
                         },
                     });
 
-                    // var viewer = new Viewer(document.getElementById('images'), {
-                    //     url:"src2" ,
-                    //     hidden: function () {
-                    //         viewer.destroy();
-                    //     },
-                    // });
-                    // viewer.show(-1);
                     viewer.view();
                     $("#loading")[0].style.display = 'none';
                 });
